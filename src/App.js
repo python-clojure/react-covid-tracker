@@ -52,11 +52,8 @@ const App = () => {
     getCountriesData();
   }, []);
 
-  console.log(casesType);
-
   const onCountryChange = async (e) => {
     const countryCode = e.target.value;
-
     const url =
       countryCode === "worldwide"
         ? "https://disease.sh/v3/covid-19/all"
@@ -66,7 +63,11 @@ const App = () => {
       .then((data) => {
         setInputCountry(countryCode);
         setCountryInfo(data);
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        if(countryCode !=="worldwide"){
+          setMapCenter([data.countryInfo.lat, data.countryInfo.long]); 
+        } else {
+          setMapCenter({ lat: 34.80746, lng: -40.4796 }); 
+        }
         setMapZoom(4);
       });
   };
@@ -124,10 +125,10 @@ const App = () => {
       <Card className="app__right">
         <CardContent>
           <div className="app__information">
-            <h3>Live Cases by Country</h3>
-            <Table countries={tableData} />
-            <h3>Worldwide new {casesType}</h3>
-            <LineGraph casesType={casesType} />
+            <h3>Live {casesType.charAt(0).toUpperCase() + casesType.slice(1)} by Country</h3>
+            <Table countries={tableData} casesType={casesType} />
+            <h3>{(country.charAt(0).toUpperCase() + country.slice(1))} new {casesType}</h3>
+            <LineGraph country={country} casesType={casesType} />
           </div>
         </CardContent>
       </Card>
